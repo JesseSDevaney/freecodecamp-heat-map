@@ -10,6 +10,11 @@
   .cell {
     stroke: white;
     stroke-width: 0.2px;
+
+    &:hover {
+      stroke: black;
+      stroke-width: 0.5px;
+    }
   }
 
   #title {
@@ -34,4 +39,13 @@
       font-size: 0.55rem;
     }
   }
+}
+
+#tooltip {
+  position: fixed;
+  background: black;
+  opacity: 0.9;
+  border-radius: 5px;
+  padding: 1rem;
+  white-space: pre;
 }

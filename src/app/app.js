@@ -82,7 +82,7 @@ export default function createHeatMap(data) {
     "#002699",
     "#3366ff",
     "#ccd9ff",
-    " #ffffff",
+    "#ffffff",
     "#ffcccc",
     "#ff3333",
     "#b30000",
@@ -115,7 +115,29 @@ export default function createHeatMap(data) {
     })
     .attr("data-month", (d, i) => months[i])
     .attr("data-year", (d, i) => years[i])
-    .attr("data-temp", (d) => d);
+    .attr("data-temp", (d) => d.toFixed(3))
+    .on("mouseover", (event) => {
+      const { target, x, y } = event;
+
+      let targetColor = target.getAttribute("fill");
+      const { month, year, temp } = target.dataset;
+
+      const tooltip = document.createElement("div");
+      tooltip.setAttribute("id", "tooltip");
+      tooltip.setAttribute("data-year", year);
+      tooltip.style.left = `${x + 20}px`;
+      tooltip.style.top = `${y + 20}px`;
+      tooltip.style.color = targetColor;
+      tooltip.appendChild(
+        document.createTextNode(
+          `Year: ${year}` + `\nMonth: ${month}` + `\nTemperature: ${temp}`
+        )
+      );
+      document.body.appendChild(tooltip);
+    })
+    .on("mouseout", () => {
+      document.getElementById("tooltip").remove();
+    });
 
   // plot legend
   const legend = svg.append("svg").attr("id", "legend");
