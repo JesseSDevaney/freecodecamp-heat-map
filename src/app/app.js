@@ -5,6 +5,9 @@ export default function createHeatMap(data) {
   const width = 800;
   const height = 600;
 
+  const baseTemperature = data["baseTemperature"];
+  const monthlyVariance = data["monthlyVariance"];
+
   const svg = d3
     .select("#root")
     .append("svg")
@@ -15,10 +18,12 @@ export default function createHeatMap(data) {
   const padHeight = 0.1 * height;
 
   // x-axis
-  const years = data["monthlyVariance"].map(({ year }) => parseInt(year, 10));
+  const years = monthlyVariance.map(({ year }) => year);
+  const minYear = d3.min(years);
+  const maxYear = d3.max(years);
   const xScale = d3
     .scaleLinear()
-    .domain([d3.min(years) - 0.5, d3.max(years) + 0.5])
+    .domain([minYear - 0.5, maxYear + 0.5])
     .range([padWidth, width - padWidth]);
 
   const xAxis = d3.axisBottom(xScale).tickFormat((year) => year);
@@ -40,12 +45,12 @@ export default function createHeatMap(data) {
     .attr("y", "97%");
 
   // y-axis
-  const months = data["monthlyVariance"].map(({ month }) =>
-    parseInt(month, 10)
-  );
+  const months = monthlyVariance.map(({ month }) => month);
+  const minMonth = d3.min(months);
+  const maxMonth = d3.max(months);
   const yScale = d3
     .scaleLinear()
-    .domain([d3.min(months) - 0.5, d3.max(months) + 0.5])
+    .domain([minMonth - 0.5, maxMonth + 0.5])
     .range([height - padHeight, padHeight]);
 
   const yAxis = d3.axisLeft(yScale);
@@ -66,4 +71,46 @@ export default function createHeatMap(data) {
     .attr("transform", "rotate(-90)")
     .attr("x", "-18%")
     .attr("y", "6%");
+
+  // plot cells
+  const cellWidth = (width - 2 * padWidth) / (maxYear - minYear + 1);
+  const cellHeight = (height - 2 * padHeight) / (maxMonth - minMonth + 1);
+  const cellColors = [
+    "#002699",
+    "#3366ff",
+    "#ccd9ff",
+    " #ffffff",
+    "#ffcccc",
+    "#ff3333",
+    "#b30000",
+  ];
+  const temps = monthlyVariance.map(
+    ({ variance }) => baseTemperature + variance
+  );
+  const minTemp = d3.min(temps);
+  const maxTemp = d3.max(temps);
+
+  svg
+    .selectAll("rect")
+    .data(temps)
+    .enter()
+    .append("rect")
+    .attr("class", "cell")
+    .attr("x", (d, i) => xScale(years[i]) - cellWidth / 2)
+    .attr("y", (d, i) => yScale(months[i]) - cellHeight / 2)
+    .attr("width", cellWidth)
+    .attr("height", cellHeight)
+    .attr("fill", (d) => {
+      const rangePercentile = (d - minTemp) / (maxTemp - minTemp);
+
+      let colorIndex = Math.floor(cellColors.length * rangePercentile);
+      if (colorIndex >= cellColors.length) {
+        colorIndex = cellColors.length - 1;
+      }
+
+      return cellColors[colorIndex];
+    })
+    .attr("data-month", (d, i) => months[i])
+    .attr("data-year", (d, i) => years[i])
+    .attr("data-temp", (d) => d);
 }
