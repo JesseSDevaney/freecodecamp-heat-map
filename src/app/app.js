@@ -91,7 +91,7 @@ export default function createHeatMap(data) {
   const maxTemp = d3.max(temps);
 
   svg
-    .selectAll("rect")
+    .selectAll(".cell")
     .data(temps)
     .enter()
     .append("rect")
@@ -138,11 +138,11 @@ export default function createHeatMap(data) {
   const keyYChange = keyPadding + legendCellHeight;
 
   legend
-    .selectAll(".legend-rect")
+    .selectAll(".legend-key")
     .data(cellColors)
     .enter()
     .append("rect")
-    .attr("class", "legend-rect")
+    .attr("class", "legend-key")
     .attr("x", keyX)
     .attr("y", (d, i) => keyYStart + i * keyYChange)
     .attr("width", legendCellWidth)
@@ -151,7 +151,7 @@ export default function createHeatMap(data) {
 
   // legend values
   legend
-    .selectAll(".legend-text")
+    .selectAll(".legend-value")
     .data(cellColors)
     .enter()
     .append("text")
@@ -167,7 +167,7 @@ export default function createHeatMap(data) {
 
       return `(${startRange} - ${endRange})`;
     })
-    .attr("class", "legend-text")
+    .attr("class", "legend-value")
     .attr("x", keyX + 1.5 * legendCellWidth)
     .attr("y", (d, i) => keyYStart + legendCellHeight / 2 + i * keyYChange)
     .attr("dominant-baseline", "middle");
