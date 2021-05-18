@@ -26,7 +26,10 @@ export default function createHeatMap(data) {
     .domain([minYear - 0.5, maxYear + 0.5])
     .range([padWidth, width - padWidth]);
 
-  const xAxis = d3.axisBottom(xScale).tickFormat((year) => year);
+  const xAxis = d3
+    .axisBottom(xScale)
+    .tickFormat((year) => year)
+    .tickSizeOuter(0);
 
   // Plot x-axis
   svg
@@ -53,7 +56,7 @@ export default function createHeatMap(data) {
     .domain([minMonth - 0.5, maxMonth + 0.5])
     .range([height - padHeight, padHeight]);
 
-  const yAxis = d3.axisLeft(yScale);
+  const yAxis = d3.axisLeft(yScale).tickSizeOuter(0);
 
   // Plot y-axis
   svg
