@@ -171,4 +171,14 @@ export default function createHeatMap(data) {
     .attr("x", keyX + 1.5 * legendCellWidth)
     .attr("y", (d, i) => keyYStart + legendCellHeight / 2 + i * keyYChange)
     .attr("dominant-baseline", "middle");
+
+  // title
+  svg
+    .append("text")
+    .text("Temperature Trends over the Last 3 Centuries")
+    .attr("id", "title")
+    .attr("x", "50%")
+    .attr("y", "3%")
+    .attr("dominant-baseline", "middle")
+    .attr("text-anchor", "middle");
 }
