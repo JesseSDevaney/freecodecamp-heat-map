@@ -181,4 +181,17 @@ export default function createHeatMap(data) {
     .attr("y", "3%")
     .attr("dominant-baseline", "middle")
     .attr("text-anchor", "middle");
+
+  // description
+  svg
+    .append("text")
+    .text(
+      "Temperature values over the last 3 centuries indicate a warming trend with fewer cold anomalies and on average, warmer temperatures."
+    )
+    .attr("id", "description")
+    .attr("x", "50%")
+    .attr("y", "6.5%")
+    .attr("fill", "rgba(0, 0, 0, 0.6)")
+    .attr("dominant-baseline", "middle")
+    .attr("text-anchor", "middle");
 }
