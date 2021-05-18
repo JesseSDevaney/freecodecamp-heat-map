@@ -11,4 +11,19 @@
     stroke: white;
     stroke-width: 0.2px;
   }
+
+  #legend {
+    #legend-title {
+      font-size: 0.6rem;
+    }
+
+    .legend-rect {
+      stroke: black;
+      stroke-width: 0.5px;
+    }
+
+    .legend-text {
+      font-size: 0.55rem;
+    }
+  }
 }

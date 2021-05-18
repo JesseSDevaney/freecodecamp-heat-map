@@ -14,7 +14,7 @@ export default function createHeatMap(data) {
     .attr("id", "chart")
     .attr("viewBox", `0 0 ${width} ${height}`);
 
-  const padWidth = 0.1 * width;
+  const padWidth = 0.13 * width;
   const padHeight = 0.1 * height;
 
   // x-axis
@@ -113,4 +113,62 @@ export default function createHeatMap(data) {
     .attr("data-month", (d, i) => months[i])
     .attr("data-year", (d, i) => years[i])
     .attr("data-temp", (d) => d);
+
+  // plot legend
+  const legend = svg.append("svg").attr("id", "legend");
+
+  // legend title
+  const legendTitleY = height / 3;
+
+  legend
+    .append("text")
+    .text("Temperature Ranges")
+    .attr("id", "legend-title")
+    .attr("x", width - padWidth / 2)
+    .attr("y", legendTitleY)
+    .attr("text-anchor", "middle")
+    .attr("dominant-baseline", "middle");
+
+  // legend keys
+  const legendCellWidth = 10;
+  const legendCellHeight = 10;
+  const keyPadding = 5;
+  const keyX = width - 0.82 * padWidth;
+  const keyYStart = legendTitleY + 3 * keyPadding;
+  const keyYChange = keyPadding + legendCellHeight;
+
+  legend
+    .selectAll(".legend-rect")
+    .data(cellColors)
+    .enter()
+    .append("rect")
+    .attr("class", "legend-rect")
+    .attr("x", keyX)
+    .attr("y", (d, i) => keyYStart + i * keyYChange)
+    .attr("width", legendCellWidth)
+    .attr("height", legendCellHeight)
+    .attr("fill", (d) => d);
+
+  // legend values
+  legend
+    .selectAll(".legend-text")
+    .data(cellColors)
+    .enter()
+    .append("text")
+    .text((d, i) => {
+      const startRange = (
+        (i / cellColors.length) * (maxTemp - minTemp) +
+        minTemp
+      ).toFixed(3);
+      const endRange = (
+        ((i + 1) / cellColors.length) * (maxTemp - minTemp) +
+        minTemp
+      ).toFixed(3);
+
+      return `(${startRange} - ${endRange})`;
+    })
+    .attr("class", "legend-text")
+    .attr("x", keyX + 1.5 * legendCellWidth)
+    .attr("y", (d, i) => keyYStart + legendCellHeight / 2 + i * keyYChange)
+    .attr("dominant-baseline", "middle");
 }
